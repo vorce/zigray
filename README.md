@@ -6,6 +6,8 @@ https://raytracing.github.io/books/RayTracingInOneWeekend.html#overview
 
 https://zigmonthly.org/letters/2021/september/
 
+format the code: `zig fmt src/*.zig`
+
 ## Running
 
 ```bash
