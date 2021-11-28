@@ -1,24 +1,8 @@
 const std = @import("std");
-const stdout = std.io.getStdOut().writer();
 const stderr = std.debug;
-
-// pub fn main() anyerror!void {
-//     std.log.info("All your codebase are belong to us.", .{});
-// }
-
-// test "basic test" {
-//     try std.testing.expectEqual(10, 3 + 7);
-// }
-
-pub fn floatDiv(val: u32) f64 {
-    // const index: u32 = 64;
-    const width: u32 = 128;
-    return @intToFloat(f64, val) / @intToFloat(f64, width);
-}
-
-test "floatDiv" {
-    try std.testing.expectEqual(@as(f64, 0.5), floatDiv(64));
-}
+const stdout = std.io.getStdOut().writer();
+const vector = @import("vector.zig");
+const Vec3 = vector.Vec3;
 
 pub fn main() anyerror!void {
     const image_width: u32 = 256;
@@ -32,15 +16,8 @@ pub fn main() anyerror!void {
 
         var x: i32 = 0;
         while (x < image_width) : (x += 1) {
-            var r: f32 = @intToFloat(f32, x) / @intToFloat(f32, (image_width - 1));
-            var g: f32 = @intToFloat(f32, y) / @intToFloat(f32, (image_height - 1));
-            const b: f32 = 0.25;
-
-            var ir: u32 = @floatToInt(u32, 255.999 * r);
-            var ig: u32 = @floatToInt(u32, 255.999 * g);
-            var ib: u32 = @floatToInt(u32, 255.999 * b);
-
-            try stdout.print("{d} {d} {d}\n", .{ ir, ig, ib });
+            var pixel_color: Vec3 = Vec3.init(@intToFloat(f32, x) / @intToFloat(f32, (image_width - 1)), @intToFloat(f32, y) / @intToFloat(f32, (image_height - 1)), 0.25);
+            try Vec3.writeColor(pixel_color);
         }
     }
     stderr.print("\nDone.\n", .{});
