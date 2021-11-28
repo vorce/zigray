@@ -32,9 +32,9 @@ pub fn main() anyerror!void {
 
         var x: i32 = 0;
         while (x < image_width) : (x += 1) {
-            var r: f64 = @intToFloat(f64, x) / @intToFloat(f64, (image_width - 1));
-            var g: f64 = @intToFloat(f64, y) / @intToFloat(f64, (image_height - 1));
-            const b: f64 = 0.25;
+            var r: f32 = @intToFloat(f32, x) / @intToFloat(f32, (image_width - 1));
+            var g: f32 = @intToFloat(f32, y) / @intToFloat(f32, (image_height - 1));
+            const b: f32 = 0.25;
 
             var ir: u32 = @floatToInt(u32, 255.999 * r);
             var ig: u32 = @floatToInt(u32, 255.999 * g);
