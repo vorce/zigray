@@ -3,6 +3,8 @@ const stderr = std.debug;
 const stdout = std.io.getStdOut().writer();
 const Vec3 = @import("vector.zig").Vec3;
 const Ray = @import("ray.zig").Ray;
+const hittable = @import("hittable.zig");
+const Sphere = @import("sphere.zig").Sphere;
 
 pub fn main() anyerror!void {
     const aspect_ratio: f32 = 16.0 / 9.0;
@@ -13,6 +15,13 @@ pub fn main() anyerror!void {
     const viewport_height: f32 = 2.0;
     const viewport_width: f32 = aspect_ratio * viewport_height;
     const focal_length: f32 = 1.0;
+
+    // World
+    var world: hittable.HittableList = hittable.HittableList.init();
+    var sphere: Sphere = Sphere.init(Vec3.init(0.0, 0.0, -1.0), 0.5);
+    var land: Sphere = Sphere.init(Vec3.init(0, -100.5, -1), 100);
+    world.addHittable(&sphere.hittable);
+    world.addHittable(&land.hittable);
 
     const origin: Vec3 = Vec3.init(0.0, 0.0, 0.0);
     const horizontal: Vec3 = Vec3.init(viewport_width, 0.0, 0.0);
@@ -30,7 +39,7 @@ pub fn main() anyerror!void {
             var u = @intToFloat(f32, x) / @intToFloat(f32, image_width - 1);
             var v = @intToFloat(f32, y) / @intToFloat(f32, image_height - 1);
             var ray = Ray.init(origin, lower_left_corner.add(horizontal.multiplyBy(u)).add(vertical.multiplyBy(v)).sub(origin));
-            var pixel_color = ray.color();
+            var pixel_color = ray.color(&world.hittable);
 
             try Vec3.writeColor(pixel_color);
         }
