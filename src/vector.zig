@@ -70,6 +70,12 @@ pub const Vec3 = struct {
 
         try stdout.print("{d} {d} {d}\n", .{ r, g, b });
     }
+
+    pub fn expectEqual(expected: Vec3, actual: Vec3) anyerror!void {
+        try testing.expectEqual(expected.x, actual.x);
+        try testing.expectEqual(expected.y, actual.y);
+        try testing.expectEqual(expected.z, actual.z);
+    }
 };
 
 test "add" {
@@ -79,9 +85,7 @@ test "add" {
 
     const result: Vec3 = v1.add(v2);
 
-    try testing.expect(result.x == expected_result.x);
-    try testing.expect(result.y == expected_result.y);
-    try testing.expect(result.z == expected_result.z);
+    try Vec3.expectEqual(expected_result, result);
 }
 
 test "sub" {
@@ -91,9 +95,7 @@ test "sub" {
 
     const result: Vec3 = v1.sub(v2);
 
-    try testing.expect(result.x == expected_result.x);
-    try testing.expect(result.y == expected_result.y);
-    try testing.expect(result.z == expected_result.z);
+    try Vec3.expectEqual(expected_result, result);
 }
 
 test "mult" {
@@ -103,9 +105,7 @@ test "mult" {
 
     const result: Vec3 = v1.mult(v2);
 
-    try testing.expect(result.x == expected_result.x);
-    try testing.expect(result.y == expected_result.y);
-    try testing.expect(result.z == expected_result.z);
+    try Vec3.expectEqual(expected_result, result);
 }
 
 test "multiplyBy" {
@@ -115,9 +115,7 @@ test "multiplyBy" {
 
     const result: Vec3 = v1.multiplyBy(factor);
 
-    try testing.expect(result.x == expected_result.x);
-    try testing.expect(result.y == expected_result.y);
-    try testing.expect(result.z == expected_result.z);
+    try Vec3.expectEqual(expected_result, result);
 }
 
 test "div" {
@@ -127,9 +125,7 @@ test "div" {
 
     const result: Vec3 = v1.div(v2);
 
-    try testing.expect(result.x == expected_result.x);
-    try testing.expect(result.y == expected_result.y);
-    try testing.expect(result.z == expected_result.z);
+    try Vec3.expectEqual(expected_result, result);
 }
 
 test "divideBy" {
@@ -139,9 +135,7 @@ test "divideBy" {
 
     const result: Vec3 = v1.divideBy(divisor);
 
-    try testing.expect(result.x == expected_result.x);
-    try testing.expect(result.y == expected_result.y);
-    try testing.expect(result.z == expected_result.z);
+    try Vec3.expectEqual(expected_result, result);
 }
 
 test "length" {
