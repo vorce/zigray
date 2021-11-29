@@ -19,15 +19,15 @@ pub const Ray = struct {
 
     pub fn hitSphere(ray: Ray, sphere_center: Vec3, radius: f32) f32 {
         const oc: Vec3 = ray.origin.sub(sphere_center);
-        const a: f32 = ray.direction.dot(ray.direction);
-        const b: f32 = oc.dot(ray.direction) * 2.0;
-        const c: f32 = oc.dot(oc) - (radius * radius);
-        const discriminant: f32 = (b * b) - (a * c * 4.0);
+        const a: f32 = ray.direction.lengthSquared();
+        const half_b: f32 = oc.dot(ray.direction);
+        const c: f32 = oc.lengthSquared() - (radius * radius);
+        const discriminant: f32 = (half_b * half_b) - (a * c);
 
         if (discriminant < 0) {
             return -1.0;
         } else {
-            return (-b - @sqrt(discriminant)) / (2.0 * a);
+            return (-half_b - @sqrt(discriminant)) / a;
         }
     }
 

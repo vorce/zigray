@@ -39,7 +39,7 @@ pub const Vec3 = struct {
         return div(self, init(divisor, divisor, divisor));
     }
 
-    fn lengthSquared(self: Vec3) f32 {
+    pub fn lengthSquared(self: Vec3) f32 {
         return (self.x * self.x) + (self.y * self.y) + (self.z * self.z);
     }
 
