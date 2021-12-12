@@ -5,16 +5,31 @@ const Vec3 = @import("vector.zig").Vec3;
 const Ray = @import("ray.zig").Ray;
 const hittable = @import("hittable.zig");
 const Sphere = @import("sphere.zig").Sphere;
+const Camera = @import("camera.zig").Camera;
+
+const RndGen = std.rand.DefaultPrng;
+var rnd = RndGen.init(0);
+
+fn randomFloat() f32 {
+    return rnd.random().float(f32);
+}
+
+test "randomFloat" {
+    const expected_result: f32 = 0.285326123;
+    try std.testing.expectEqual(expected_result, randomFloat());
+}
 
 pub fn main() anyerror!void {
-    const aspect_ratio: f32 = 16.0 / 9.0;
-    const image_width: u32 = 400;
-    const image_height: u32 = @floatToInt(u32, @intToFloat(f32, image_width) / aspect_ratio);
-
     // Camera
+    const aspect_ratio: f32 = 16.0 / 9.0;
     const viewport_height: f32 = 2.0;
     const viewport_width: f32 = aspect_ratio * viewport_height;
     const focal_length: f32 = 1.0;
+    var camera: Camera = Camera.init(viewport_height, viewport_width, focal_length);
+
+    const image_width: u32 = 400;
+    const image_height: u32 = @floatToInt(u32, @intToFloat(f32, image_width) / aspect_ratio);
+    const samples_per_pixel: u32 = 100;
 
     // World
     var world: hittable.HittableList = hittable.HittableList.init();
@@ -22,11 +37,6 @@ pub fn main() anyerror!void {
     var land: Sphere = Sphere.init(Vec3.init(0, -100.5, -1), 100);
     world.addHittable(&sphere.hittable);
     world.addHittable(&land.hittable);
-
-    const origin: Vec3 = Vec3.init(0.0, 0.0, 0.0);
-    const horizontal: Vec3 = Vec3.init(viewport_width, 0.0, 0.0);
-    const vertical: Vec3 = Vec3.init(0.0, viewport_height, 0.0);
-    const lower_left_corner: Vec3 = origin.sub(horizontal.divideBy(2.0)).sub(vertical.divideBy(2.0)).sub(Vec3.init(0.0, 0.0, focal_length));
 
     try stdout.print("P3\n{d} {d}\n255\n", .{ image_width, image_height });
 
@@ -36,12 +46,16 @@ pub fn main() anyerror!void {
 
         var x: i32 = 0;
         while (x < image_width) : (x += 1) {
-            var u = @intToFloat(f32, x) / @intToFloat(f32, image_width - 1);
-            var v = @intToFloat(f32, y) / @intToFloat(f32, image_height - 1);
-            var ray = Ray.init(origin, lower_left_corner.add(horizontal.multiplyBy(u)).add(vertical.multiplyBy(v)).sub(origin));
-            var pixel_color = ray.color(&world.hittable);
-
-            try Vec3.writeColor(pixel_color);
+            var pixel_color: Vec3 = Vec3.init(0.0, 0.0, 0.0);
+            var sample: u32 = 0;
+            while (sample < samples_per_pixel) : (sample += 1) {
+                var u: f32 = (@intToFloat(f32, x) + randomFloat()) / @intToFloat(f32, image_width - 1);
+                var v: f32 = (@intToFloat(f32, y) + randomFloat()) / @intToFloat(f32, image_height - 1);
+                stderr.print("u: {d}, v: {d}\n", .{ u, v });
+                var ray: Ray = camera.getRay(u, v);
+                pixel_color = pixel_color.add(ray.color(&world.hittable));
+            }
+            try Vec3.writeColor(pixel_color, samples_per_pixel);
         }
     }
     stderr.print("\nDone.\n", .{});

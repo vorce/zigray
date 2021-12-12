@@ -4,19 +4,35 @@ https://ziglang.org/documentation/master/
 
 https://raytracing.github.io/books/RayTracingInOneWeekend.html#overview
 
-https://zigmonthly.org/letters/2021/september/
+Something fun to get to know Zig a bit.
 
-format the code: `zig fmt src/*.zig`
+```bash
+❯ zig version
+0.9.0-dev.1795+aa61e03f2
+```
 
 ## Running
 
 ```bash
-zig build run > image1.ppm
-open image1.ppm
+zig build run > imageX.ppm
+open imageX.ppm
 ```
 
 ## Tests
 
 ```bash
-zig test src/*.zig
+zig test src/file.zig
 ```
+
+## Notes
+
+Installing latest Zig with brew: `brew install zig --HEAD`
+
+format the code: `zig fmt src/*.zig`
+
+- 4 spaces, for indentation.
+- snake_case, for constants and variables.
+- pascalCase, for functions.
+- CamelCase, for structs
+
+Would be cool to try SDL https://github.com/andrewrk/sdl-zig-demo

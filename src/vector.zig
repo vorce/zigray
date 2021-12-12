@@ -59,14 +59,31 @@ pub const Vec3 = struct {
         return divideBy(self, self.length());
     }
 
-    fn floatToColor(val: f32) u32 {
-        return @floatToInt(u32, 255.999 * val);
+    fn clamp(x: f32, min: f32, max: f32) f32 {
+        if (x < min) return min;
+        if (x > max) return max;
+        return x;
     }
 
-    pub fn writeColor(pixel_color: Vec3) anyerror!void {
-        const r: u32 = floatToColor(pixel_color.x);
-        const g: u32 = floatToColor(pixel_color.y);
-        const b: u32 = floatToColor(pixel_color.z);
+    fn floatToColor(val: f32) u32 {
+        return @floatToInt(u32, 256.0 * clamp(val, 0.0, 0.999));
+        // return @floatToInt(u32, 255.999 * val);
+    }
+
+    pub fn writeColor(pixel_color: Vec3, samples_per_pixel: u32) anyerror!void {
+        var rf: f32 = pixel_color.x;
+        var gf: f32 = pixel_color.y;
+        var bf: f32 = pixel_color.z;
+
+        // Divide the color by the number of samples.
+        const scale: f32 = 1.0 / @intToFloat(f32, samples_per_pixel);
+        rf *= scale;
+        gf *= scale;
+        bf *= scale;
+
+        const r: u32 = floatToColor(rf);
+        const g: u32 = floatToColor(gf);
+        const b: u32 = floatToColor(bf);
 
         try stdout.print("{d} {d} {d}\n", .{ r, g, b });
     }
