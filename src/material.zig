@@ -56,7 +56,7 @@ pub const Mirror = struct {
         const reflected: Vec3 = ray.direction.unit().reflect(hit_record.normal);
         const scattered: Ray = Ray.init(hit_record.point, reflected);
 
-        if (scattered.direction.dot(hit_record.normal) > 0.0) {
+        if (scattered.direction.dot(hit_record.normal) > 0) {
             return Material.init(scattered, self.albedo);
         }
         return null;
@@ -69,7 +69,7 @@ pub const Metal = struct {
     fuzziness: f32,
 
     pub fn init(albedo: Vec3, fuzz: f32) Metal {
-        const fuzziness: f32 = if (fuzz < 1.0) fuzz else 1.0;
+        const fuzziness: f32 = if (fuzz < 1) fuzz else 1;
         return Metal{ .albedo = albedo, .fuzziness = fuzziness, .scatterable = Scatterable{ .scatterFn = scatter } };
     }
 
@@ -78,7 +78,7 @@ pub const Metal = struct {
         const reflected: Vec3 = ray.direction.unit().reflect(hit_record.normal);
         const scattered: Ray = Ray.init(hit_record.point, reflected.add(Vec3.randomInUnitSphere().multiplyBy(self.fuzziness)));
 
-        if (scattered.direction.dot(hit_record.normal) > 0.0) {
+        if (scattered.direction.dot(hit_record.normal) > 0) {
             return Material.init(scattered, self.albedo);
         }
         return null;

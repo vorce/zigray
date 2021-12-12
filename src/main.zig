@@ -29,12 +29,12 @@ pub fn main() anyerror!void {
     var material_top_left = material.Metal.init(Vec3.init(0.6, 0.8, 0.7), 0.4);
 
     var land: Sphere = Sphere.init(Vec3.init(0, -100.5, -1), 100, &material_ground.scatterable);
-    var sphere_center: Sphere = Sphere.init(Vec3.init(0.0, 0.0, -1.0), 0.5, &material_center.scatterable);
-    var sphere_left: Sphere = Sphere.init(Vec3.init(-1.0, 0.0, -1.0), 0.5, &material_left.scatterable);
-    var sphere_right: Sphere = Sphere.init(Vec3.init(1.0, 0.0, -1.0), 0.5, &material_right.scatterable);
-    var sphere_top_left: Sphere = Sphere.init(Vec3.init(-0.75, 1.0, -1.0), 0.2, &material_top_left.scatterable);
-    var sphere_top_right: Sphere = Sphere.init(Vec3.init(0.75, 1.0, -1.0), 0.2, &material_top_left.scatterable);
-    var sphere_top_center: Sphere = Sphere.init(Vec3.init(0.0, 1.25, -1.0), 0.35, &material_top_left.scatterable);
+    var sphere_center: Sphere = Sphere.init(Vec3.init(0, 0, -1), 0.5, &material_center.scatterable);
+    var sphere_left: Sphere = Sphere.init(Vec3.init(-1, 0, -1), 0.5, &material_left.scatterable);
+    var sphere_right: Sphere = Sphere.init(Vec3.init(1, 0, -1), 0.5, &material_right.scatterable);
+    var sphere_top_left: Sphere = Sphere.init(Vec3.init(-0.75, 1, -1), 0.2, &material_top_left.scatterable);
+    var sphere_top_right: Sphere = Sphere.init(Vec3.init(0.75, 1, -1), 0.2, &material_top_left.scatterable);
+    var sphere_top_center: Sphere = Sphere.init(Vec3.init(0, 1.25, -1), 0.35, &material_top_left.scatterable);
 
     world.addHittable(&land.hittable);
     world.addHittable(&sphere_center.hittable);
@@ -52,7 +52,7 @@ pub fn main() anyerror!void {
 
         var x: i32 = 0;
         while (x < image_width) : (x += 1) {
-            var pixel_color: Vec3 = Vec3.init(0.0, 0.0, 0.0);
+            var pixel_color: Vec3 = Vec3.init(0, 0, 0);
             var sample: u32 = 0;
             while (sample < samples_per_pixel) : (sample += 1) {
                 var u: f32 = (@intToFloat(f32, x) + zigray_utils.randomFloat()) / @intToFloat(f32, image_width - 1);

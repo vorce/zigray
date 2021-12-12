@@ -28,7 +28,7 @@ pub const Ray = struct {
         const discriminant: f32 = (half_b * half_b) - (a * c);
 
         if (discriminant < 0) {
-            return -1.0;
+            return -1;
         } else {
             return (-half_b - @sqrt(discriminant)) / a;
         }
@@ -37,7 +37,7 @@ pub const Ray = struct {
     pub fn color(ray: Ray, world: *hittable.Hittable, depth: i32) Vec3 {
         // If we've exceeded the ray bounce limit, no more light is gathered.
         if (depth <= 0) {
-            return Vec3.init(0.0, 0.0, 0.0);
+            return Vec3.init(0, 0, 0);
         }
 
         const hit_record = world.hit(ray, 0.001, infinity);
@@ -46,24 +46,24 @@ pub const Ray = struct {
             if (material) |mat| {
                 return mat.attenuation.mult(color(mat.ray, world, depth - 1));
             }
-            return Vec3.init(0.0, 0.0, 0.0);
+            return Vec3.init(0, 0, 0);
         }
 
         const unit_direction: Vec3 = Vec3.unit(ray.direction);
-        const hit_point: f32 = 0.5 * (unit_direction.y + 1.0);
-        const fromColor: Vec3 = Vec3.init(1.0, 1.0, 1.0);
-        const toColor: Vec3 = Vec3.init(0.5, 0.7, 1.0);
+        const hit_point: f32 = 0.5 * (unit_direction.y + 1);
+        const fromColor: Vec3 = Vec3.init(1, 1, 1);
+        const toColor: Vec3 = Vec3.init(0.5, 0.7, 1);
 
-        return fromColor.multiplyBy(1.0 - hit_point).add(toColor.multiplyBy(hit_point));
+        return fromColor.multiplyBy(1 - hit_point).add(toColor.multiplyBy(hit_point));
     }
 };
 
 test "at" {
-    const origin: Vec3 = Vec3.init(0.0, 0.0, 0.0);
-    const direction: Vec3 = Vec3.init(1.0, 0.0, 0.0);
+    const origin: Vec3 = Vec3.init(0, 0, 0);
+    const direction: Vec3 = Vec3.init(1, 0, 0);
     const ray: Ray = Ray.init(origin, direction);
     const distance: f32 = 0.5;
-    const expected_result: Vec3 = Vec3.init(0.5, 0.0, 0.0);
+    const expected_result: Vec3 = Vec3.init(0.5, 0, 0);
 
     const result: Vec3 = ray.at(distance);
 

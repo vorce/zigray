@@ -4,9 +4,9 @@ const stdout = std.io.getStdOut().writer();
 const zigray_utils = @import("util.zig");
 
 pub const Vec3 = struct {
-    x: f32 = 0.0,
-    y: f32 = 0.0,
-    z: f32 = 0.0,
+    x: f32 = 0,
+    y: f32 = 0,
+    z: f32 = 0,
 
     pub fn init(x: f32, y: f32, z: f32) Vec3 {
         return Vec3{
@@ -67,7 +67,7 @@ pub const Vec3 = struct {
     }
 
     fn floatToColor(val: f32) u32 {
-        return @floatToInt(u32, 256.0 * clamp(val, 0.0, 0.999));
+        return @floatToInt(u32, 256 * clamp(val, 0, 0.999));
     }
 
     pub fn writeColor(pixel_color: Vec3, samples_per_pixel: u32) anyerror!void {
@@ -75,8 +75,8 @@ pub const Vec3 = struct {
         var gf: f32 = pixel_color.y;
         var bf: f32 = pixel_color.z;
 
-        // Divide the color by the number of samples and gamma-corrected for gamma = 2.0
-        const scale: f32 = 1.0 / @intToFloat(f32, samples_per_pixel);
+        // Divide the color by the number of samples and gamma-corrected for gamma = 2
+        const scale: f32 = 1 / @intToFloat(f32, samples_per_pixel);
         rf = @sqrt(rf * scale);
         gf = @sqrt(gf * scale);
         bf = @sqrt(bf * scale);
@@ -98,8 +98,8 @@ pub const Vec3 = struct {
 
     pub fn randomInUnitSphere() Vec3 {
         while (true) {
-            var p: Vec3 = Vec3.randomBounded(-1.0, 1.0);
-            if (p.lengthSquared() >= 1.0) continue;
+            var p: Vec3 = Vec3.randomBounded(-1, 1);
+            if (p.lengthSquared() >= 1) continue;
             return p;
         }
     }
@@ -125,8 +125,8 @@ pub const Vec3 = struct {
 };
 
 test "add" {
-    const v1: Vec3 = Vec3.init(0.5, 0.0, 1.0);
-    const v2: Vec3 = Vec3.init(0.5, 1.0, 0.0);
+    const v1: Vec3 = Vec3.init(0.5, 0, 1);
+    const v2: Vec3 = Vec3.init(0.5, 1, 0);
     const expected_result: Vec3 = Vec3.init(v1.x + v2.x, v1.y + v2.y, v1.z + v2.z);
 
     const result: Vec3 = v1.add(v2);
@@ -135,8 +135,8 @@ test "add" {
 }
 
 test "sub" {
-    const v1: Vec3 = Vec3.init(0.5, 0.0, 1.0);
-    const v2: Vec3 = Vec3.init(0.5, 1.0, 0.0);
+    const v1: Vec3 = Vec3.init(0.5, 0, 1);
+    const v2: Vec3 = Vec3.init(0.5, 1, 0);
     const expected_result: Vec3 = Vec3.init(v1.x - v2.x, v1.y - v2.y, v1.z - v2.z);
 
     const result: Vec3 = v1.sub(v2);
@@ -145,8 +145,8 @@ test "sub" {
 }
 
 test "mult" {
-    const v1: Vec3 = Vec3.init(0.5, 0.0, 1.0);
-    const v2: Vec3 = Vec3.init(0.5, 1.0, 0.0);
+    const v1: Vec3 = Vec3.init(0.5, 0, 1);
+    const v2: Vec3 = Vec3.init(0.5, 1, 0);
     const expected_result: Vec3 = Vec3.init(v1.x * v2.x, v1.y * v2.y, v1.z * v2.z);
 
     const result: Vec3 = v1.mult(v2);
@@ -155,7 +155,7 @@ test "mult" {
 }
 
 test "multiplyBy" {
-    const v1: Vec3 = Vec3.init(0.5, 0.0, 1.0);
+    const v1: Vec3 = Vec3.init(0.5, 0, 1);
     const factor: f32 = 0.5;
     const expected_result: Vec3 = Vec3.init(v1.x * factor, v1.y * factor, v1.z * factor);
 
@@ -165,8 +165,8 @@ test "multiplyBy" {
 }
 
 test "div" {
-    const v1: Vec3 = Vec3.init(0.5, 0.0, 1.0);
-    const v2: Vec3 = Vec3.init(0.5, 1.0, 0.0);
+    const v1: Vec3 = Vec3.init(0.5, 0, 1);
+    const v2: Vec3 = Vec3.init(0.5, 1, 0);
     const expected_result: Vec3 = Vec3.init(v1.x / v2.x, v1.y / v2.y, v1.z / v2.z);
 
     const result: Vec3 = v1.div(v2);
@@ -175,7 +175,7 @@ test "div" {
 }
 
 test "divideBy" {
-    const v1: Vec3 = Vec3.init(0.5, 0.0, 1.0);
+    const v1: Vec3 = Vec3.init(0.5, 0, 1);
     const divisor: f32 = 0.5;
     const expected_result: Vec3 = Vec3.init(v1.x / divisor, v1.y / divisor, v1.z / divisor);
 
@@ -185,7 +185,7 @@ test "divideBy" {
 }
 
 test "length" {
-    const v1: Vec3 = Vec3.init(0.5, 1.0, 0.75);
+    const v1: Vec3 = Vec3.init(0.5, 1, 0.75);
 
     const result: f32 = v1.length();
 
@@ -193,19 +193,19 @@ test "length" {
 }
 
 test "dot product" {
-    const v1 = Vec3.init(1.0, 0.0, 0.0);
-    const v2 = Vec3.init(0.0, 1.0, 0.0);
+    const v1 = Vec3.init(1, 0, 0);
+    const v2 = Vec3.init(0, 1, 0);
 
-    try testing.expect(v1.dot(v2) == 0.0);
+    try testing.expect(v1.dot(v2) == 0);
 }
 
 test "nearZero" {
-    const v1: Vec3 = Vec3.init(0.5, 1.0, 0.75);
+    const v1: Vec3 = Vec3.init(0.5, 1, 0.75);
     var result: bool = v1.nearZero();
 
     try testing.expectEqual(result, false);
 
-    const v2: Vec3 = Vec3.init(0.0, 0.0000000001, 0.00000000001);
+    const v2: Vec3 = Vec3.init(0, 0.0000000001, 0.00000000001);
     result = v2.nearZero();
 
     try testing.expectEqual(result, true);
