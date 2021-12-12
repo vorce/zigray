@@ -39,9 +39,8 @@ pub const Ray = struct {
             return Vec3.init(0.0, 0.0, 0.0);
         }
 
-        const hit_record = world.hit(ray, 0, infinity);
+        const hit_record = world.hit(ray, 0.001, infinity);
         if (hit_record) |rec| {
-            // return rec.normal.add(Vec3.init(1.0, 1.0, 1.0)).multiplyBy(0.5);
             const target: Vec3 = rec.point.add(rec.normal).add(Vec3.randomInUnitSphere());
             return color(Ray.init(rec.point, target.sub(rec.point)), world, depth - 1).multiplyBy(0.5); //ray(rec.p, target - rec.p), world);
         }

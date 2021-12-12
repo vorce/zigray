@@ -75,11 +75,11 @@ pub const Vec3 = struct {
         var gf: f32 = pixel_color.y;
         var bf: f32 = pixel_color.z;
 
-        // Divide the color by the number of samples.
+        // Divide the color by the number of samples and gamma-corrected for gamma = 2.0
         const scale: f32 = 1.0 / @intToFloat(f32, samples_per_pixel);
-        rf *= scale;
-        gf *= scale;
-        bf *= scale;
+        rf = @sqrt(rf * scale);
+        gf = @sqrt(gf * scale);
+        bf = @sqrt(bf * scale);
 
         const r: u32 = floatToColor(rf);
         const g: u32 = floatToColor(gf);
