@@ -1,6 +1,7 @@
 const std = @import("std");
 const testing = std.testing;
 const stdout = std.io.getStdOut().writer();
+const zigray_utils = @import("util.zig");
 
 pub const Vec3 = struct {
     x: f32 = 0.0,
@@ -67,7 +68,6 @@ pub const Vec3 = struct {
 
     fn floatToColor(val: f32) u32 {
         return @floatToInt(u32, 256.0 * clamp(val, 0.0, 0.999));
-        // return @floatToInt(u32, 255.999 * val);
     }
 
     pub fn writeColor(pixel_color: Vec3, samples_per_pixel: u32) anyerror!void {
@@ -86,6 +86,22 @@ pub const Vec3 = struct {
         const b: u32 = floatToColor(bf);
 
         try stdout.print("{d} {d} {d}\n", .{ r, g, b });
+    }
+
+    pub fn random() Vec3 {
+        return Vec3.init(zigray_utils.randomFloat(), zigray_utils.randomFloat(), zigray_utils.randomFloat());
+    }
+
+    pub fn randomBounded(min: f32, max: f32) Vec3 {
+        return Vec3.init(zigray_utils.randomFloatBounded(min, max), zigray_utils.randomFloatBounded(min, max), zigray_utils.randomFloatBounded(min, max));
+    }
+
+    pub fn randomInUnitSphere() Vec3 {
+        while (true) {
+            var p: Vec3 = Vec3.randomBounded(-1.0, 1.0);
+            if (p.lengthSquared() >= 1.0) continue;
+            return p;
+        }
     }
 
     pub fn expectEqual(expected: Vec3, actual: Vec3) anyerror!void {

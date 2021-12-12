@@ -6,18 +6,7 @@ const Ray = @import("ray.zig").Ray;
 const hittable = @import("hittable.zig");
 const Sphere = @import("sphere.zig").Sphere;
 const Camera = @import("camera.zig").Camera;
-
-const RndGen = std.rand.DefaultPrng;
-var rnd = RndGen.init(0);
-
-fn randomFloat() f32 {
-    return rnd.random().float(f32);
-}
-
-test "randomFloat" {
-    const expected_result: f32 = 0.285326123;
-    try std.testing.expectEqual(expected_result, randomFloat());
-}
+const zigray_utils = @import("util.zig");
 
 pub fn main() anyerror!void {
     // Camera
@@ -30,6 +19,7 @@ pub fn main() anyerror!void {
     const image_width: u32 = 400;
     const image_height: u32 = @floatToInt(u32, @intToFloat(f32, image_width) / aspect_ratio);
     const samples_per_pixel: u32 = 100;
+    const max_depth: i32 = 50;
 
     // World
     var world: hittable.HittableList = hittable.HittableList.init();
@@ -49,11 +39,10 @@ pub fn main() anyerror!void {
             var pixel_color: Vec3 = Vec3.init(0.0, 0.0, 0.0);
             var sample: u32 = 0;
             while (sample < samples_per_pixel) : (sample += 1) {
-                var u: f32 = (@intToFloat(f32, x) + randomFloat()) / @intToFloat(f32, image_width - 1);
-                var v: f32 = (@intToFloat(f32, y) + randomFloat()) / @intToFloat(f32, image_height - 1);
-                stderr.print("u: {d}, v: {d}\n", .{ u, v });
+                var u: f32 = (@intToFloat(f32, x) + zigray_utils.randomFloat()) / @intToFloat(f32, image_width - 1);
+                var v: f32 = (@intToFloat(f32, y) + zigray_utils.randomFloat()) / @intToFloat(f32, image_height - 1);
                 var ray: Ray = camera.getRay(u, v);
-                pixel_color = pixel_color.add(ray.color(&world.hittable));
+                pixel_color = pixel_color.add(ray.color(&world.hittable, max_depth));
             }
             try Vec3.writeColor(pixel_color, samples_per_pixel);
         }

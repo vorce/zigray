@@ -33,10 +33,17 @@ pub const Ray = struct {
         }
     }
 
-    pub fn color(ray: Ray, world: *hittable.Hittable) Vec3 {
+    pub fn color(ray: Ray, world: *hittable.Hittable, depth: i32) Vec3 {
+        // If we've exceeded the ray bounce limit, no more light is gathered.
+        if (depth <= 0) {
+            return Vec3.init(0.0, 0.0, 0.0);
+        }
+
         const hit_record = world.hit(ray, 0, infinity);
         if (hit_record) |rec| {
-            return rec.normal.add(Vec3.init(1.0, 1.0, 1.0)).multiplyBy(0.5);
+            // return rec.normal.add(Vec3.init(1.0, 1.0, 1.0)).multiplyBy(0.5);
+            const target: Vec3 = rec.point.add(rec.normal).add(Vec3.randomInUnitSphere());
+            return color(Ray.init(rec.point, target.sub(rec.point)), world, depth - 1).multiplyBy(0.5); //ray(rec.p, target - rec.p), world);
         }
 
         const unit_direction: Vec3 = Vec3.unit(ray.direction);
