@@ -104,6 +104,10 @@ pub const Vec3 = struct {
         }
     }
 
+    pub fn randomUnitVector() Vec3 {
+        return randomInUnitSphere().unit();
+    }
+
     pub fn expectEqual(expected: Vec3, actual: Vec3) anyerror!void {
         try testing.expectEqual(expected.x, actual.x);
         try testing.expectEqual(expected.y, actual.y);

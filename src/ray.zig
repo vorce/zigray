@@ -41,8 +41,8 @@ pub const Ray = struct {
 
         const hit_record = world.hit(ray, 0.001, infinity);
         if (hit_record) |rec| {
-            const target: Vec3 = rec.point.add(rec.normal).add(Vec3.randomInUnitSphere());
-            return color(Ray.init(rec.point, target.sub(rec.point)), world, depth - 1).multiplyBy(0.5); //ray(rec.p, target - rec.p), world);
+            const target: Vec3 = rec.point.add(rec.normal).add(Vec3.randomUnitVector());
+            return color(Ray.init(rec.point, target.sub(rec.point)), world, depth - 1).multiplyBy(0.5);
         }
 
         const unit_direction: Vec3 = Vec3.unit(ray.direction);
