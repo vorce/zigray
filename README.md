@@ -36,3 +36,9 @@ format the code: `zig fmt src/*.zig`
 - CamelCase, for structs
 
 Would be cool to try SDL https://github.com/andrewrk/sdl-zig-demo
+
+## Result
+
+Didn't implement glass material yet. But managed to learn a lot about Zig while doing this! Commit log is structured more or less like the RTIOW sections.
+
+![Three raytraced spheres with different materials](zigray_image19.png)
