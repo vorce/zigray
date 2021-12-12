@@ -43,12 +43,12 @@ pub const Lambertian = struct {
     }
 };
 
-pub const Metal = struct {
+pub const Mirror = struct {
     albedo: Vec3,
     scatterable: Scatterable,
 
-    pub fn init(albedo: Vec3) Metal {
-        return Metal{ .albedo = albedo, .scatterable = Scatterable{ .scatterFn = scatter } };
+    pub fn init(albedo: Vec3) Mirror {
+        return Mirror{ .albedo = albedo, .scatterable = Scatterable{ .scatterFn = scatter } };
     }
 
     pub fn scatter(sc: *Scatterable, ray: Ray, hit_record: hittable.HitRecord) ?Material {
@@ -60,9 +60,27 @@ pub const Metal = struct {
             return Material.init(scattered, self.albedo);
         }
         return null;
-        // vec3 reflected = reflect(unit_vector(r_in.direction()), rec.normal);
-        //     scattered = ray(rec.p, reflected);
-        //     attenuation = albedo;
-        //     return (dot(scattered.direction(), rec.normal) > 0);
+    }
+};
+
+pub const Metal = struct {
+    albedo: Vec3,
+    scatterable: Scatterable,
+    fuzziness: f32,
+
+    pub fn init(albedo: Vec3, fuzz: f32) Metal {
+        const fuzziness: f32 = if (fuzz < 1.0) fuzz else 1.0;
+        return Metal{ .albedo = albedo, .fuzziness = fuzziness, .scatterable = Scatterable{ .scatterFn = scatter } };
+    }
+
+    pub fn scatter(sc: *Scatterable, ray: Ray, hit_record: hittable.HitRecord) ?Material {
+        const self: *Metal = @fieldParentPtr(Metal, "scatterable", sc);
+        const reflected: Vec3 = ray.direction.unit().reflect(hit_record.normal);
+        const scattered: Ray = Ray.init(hit_record.point, reflected.add(Vec3.randomInUnitSphere().multiplyBy(self.fuzziness)));
+
+        if (scattered.direction.dot(hit_record.normal) > 0.0) {
+            return Material.init(scattered, self.albedo);
+        }
+        return null;
     }
 };

@@ -27,8 +27,8 @@ pub fn main() anyerror!void {
     var world: hittable.HittableList = hittable.HittableList.init();
     var material_ground = material.Lambertian.init(Vec3.init(0.8, 0.8, 0.0));
     var material_center = material.Lambertian.init(Vec3.init(0.7, 0.3, 0.3));
-    var material_left = material.Metal.init(Vec3.init(0.8, 0.8, 0.8));
-    var material_right = material.Metal.init(Vec3.init(0.8, 0.6, 0.2));
+    var material_left = material.Mirror.init(Vec3.init(0.8, 0.8, 0.8));
+    var material_right = material.Metal.init(Vec3.init(0.8, 0.6, 0.2), 0.8);
 
     var land: Sphere = Sphere.init(Vec3.init(0, -100.5, -1), 100, &material_ground.scatterable);
     var sphere_center: Sphere = Sphere.init(Vec3.init(0.0, 0.0, -1.0), 0.5, &material_center.scatterable);
