@@ -12,10 +12,7 @@ const material = @import("material.zig");
 pub fn main() anyerror!void {
     // Camera
     const aspect_ratio: f32 = 16.0 / 9.0;
-    const viewport_height: f32 = 2.0;
-    const viewport_width: f32 = aspect_ratio * viewport_height;
-    const focal_length: f32 = 1.0;
-    var camera: Camera = Camera.init(viewport_height, viewport_width, focal_length);
+    var camera: Camera = Camera.init(Vec3.init(-2, 2, 1), Vec3.init(0, 0, -1), Vec3.init(0, 1, 0), 90, aspect_ratio);
 
     const image_width: u32 = 400;
     const image_height: u32 = @floatToInt(u32, @intToFloat(f32, image_width) / aspect_ratio);
