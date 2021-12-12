@@ -41,4 +41,6 @@ Would be cool to try SDL https://github.com/andrewrk/sdl-zig-demo
 
 Didn't implement glass material yet. But managed to learn a lot about Zig while doing this! Commit log is structured more or less like the RTIOW sections.
 
-![Three raytraced spheres with different materials](zigray_image19.png)
+![Raytraced spheres with different materials](zigray_logo.png)
+
+![Image 19 without glass from RTIOW](zigray_image19.png)

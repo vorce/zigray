@@ -12,7 +12,7 @@ const material = @import("material.zig");
 pub fn main() anyerror!void {
     // Camera
     const aspect_ratio: f32 = 16.0 / 9.0;
-    var camera: Camera = Camera.init(Vec3.init(-2, 2, 1), Vec3.init(0, 0, -1), Vec3.init(0, 1, 0), 20, aspect_ratio);
+    var camera: Camera = Camera.init(Vec3.init(-1.5, 2, 1), Vec3.init(0, 0, -1), Vec3.init(0, 1, 0), 60, aspect_ratio);
 
     const image_width: u32 = 400;
     const image_height: u32 = @floatToInt(u32, @intToFloat(f32, image_width) / aspect_ratio);
@@ -22,20 +22,27 @@ pub fn main() anyerror!void {
     // World
     // Is there a need for variable materials and shapes? maybe const makes more sense if not.
     var world: hittable.HittableList = hittable.HittableList.init();
-    var material_ground = material.Lambertian.init(Vec3.init(0.8, 0.8, 0.0));
-    var material_center = material.Lambertian.init(Vec3.init(0.7, 0.3, 0.3));
-    var material_left = material.Mirror.init(Vec3.init(0.8, 0.8, 0.8));
-    var material_right = material.Metal.init(Vec3.init(0.8, 0.6, 0.2), 0.8);
+    var material_ground = material.Lambertian.init(Vec3.init(0.5, 0.6, 0.3));
+    var material_center = material.Lambertian.init(Vec3.init(0.3, 0.3, 0.7));
+    var material_left = material.Mirror.init(Vec3.init(0.7, 0.7, 0.7));
+    var material_right = material.Metal.init(Vec3.init(0.8, 0.4, 0.3), 0.8);
+    var material_top_left = material.Metal.init(Vec3.init(0.6, 0.8, 0.7), 0.4);
 
     var land: Sphere = Sphere.init(Vec3.init(0, -100.5, -1), 100, &material_ground.scatterable);
     var sphere_center: Sphere = Sphere.init(Vec3.init(0.0, 0.0, -1.0), 0.5, &material_center.scatterable);
     var sphere_left: Sphere = Sphere.init(Vec3.init(-1.0, 0.0, -1.0), 0.5, &material_left.scatterable);
     var sphere_right: Sphere = Sphere.init(Vec3.init(1.0, 0.0, -1.0), 0.5, &material_right.scatterable);
+    var sphere_top_left: Sphere = Sphere.init(Vec3.init(-0.75, 1.0, -1.0), 0.2, &material_top_left.scatterable);
+    var sphere_top_right: Sphere = Sphere.init(Vec3.init(0.75, 1.0, -1.0), 0.2, &material_top_left.scatterable);
+    var sphere_top_center: Sphere = Sphere.init(Vec3.init(0.0, 1.25, -1.0), 0.35, &material_top_left.scatterable);
 
     world.addHittable(&land.hittable);
     world.addHittable(&sphere_center.hittable);
     world.addHittable(&sphere_left.hittable);
     world.addHittable(&sphere_right.hittable);
+    world.addHittable(&sphere_top_left.hittable);
+    world.addHittable(&sphere_top_right.hittable);
+    world.addHittable(&sphere_top_center.hittable);
 
     try stdout.print("P3\n{d} {d}\n255\n", .{ image_width, image_height });
 
