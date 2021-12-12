@@ -3,14 +3,16 @@ const Ray = @import("ray.zig").Ray;
 const h = @import("hittable.zig");
 const Hittable = h.Hittable;
 const HitRecord = h.HitRecord;
+const material = @import("material.zig");
 
 pub const Sphere = struct {
     center: Vec3,
     radius: f32,
     hittable: Hittable,
+    scatterable: *material.Scatterable,
 
-    pub fn init(center: Vec3, radius: f32) Sphere {
-        return Sphere{ .center = center, .radius = radius, .hittable = Hittable{ .hitFn = hit } };
+    pub fn init(center: Vec3, radius: f32, scatterable: *material.Scatterable) Sphere {
+        return Sphere{ .center = center, .radius = radius, .hittable = Hittable{ .hitFn = hit }, .scatterable = scatterable };
     }
 
     fn hit(ht: *Hittable, ray: Ray, t_min: f32, t_max: f32) ?HitRecord {
@@ -38,6 +40,7 @@ pub const Sphere = struct {
         hit_record.hit_point = root;
         hit_record.point = ray.at(hit_record.hit_point);
         hit_record.normal = hit_record.point.sub(self.center).divideBy(self.radius);
+        hit_record.scatterable = self.scatterable;
 
         const outward_normal: Vec3 = hit_record.point.sub(self.center).divideBy(self.radius);
         return hit_record.setFaceNormal(ray, outward_normal);

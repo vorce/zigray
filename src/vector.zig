@@ -108,6 +108,15 @@ pub const Vec3 = struct {
         return randomInUnitSphere().unit();
     }
 
+    pub fn nearZero(self: Vec3) bool {
+        const near_zero: f32 = 1e-8;
+        return ((@fabs(self.x) < near_zero) and (@fabs(self.y) < near_zero) and (@fabs(self.z) < near_zero));
+    }
+
+    pub fn reflect(self: Vec3, unit_v: Vec3) Vec3 {
+        return self.sub(unit_v.multiplyBy(self.dot(unit_v) * 2));
+    }
+
     pub fn expectEqual(expected: Vec3, actual: Vec3) anyerror!void {
         try testing.expectEqual(expected.x, actual.x);
         try testing.expectEqual(expected.y, actual.y);
@@ -188,4 +197,16 @@ test "dot product" {
     const v2 = Vec3.init(0.0, 1.0, 0.0);
 
     try testing.expect(v1.dot(v2) == 0.0);
+}
+
+test "nearZero" {
+    const v1: Vec3 = Vec3.init(0.5, 1.0, 0.75);
+    var result: bool = v1.nearZero();
+
+    try testing.expectEqual(result, false);
+
+    const v2: Vec3 = Vec3.init(0.0, 0.0000000001, 0.00000000001);
+    result = v2.nearZero();
+
+    try testing.expectEqual(result, true);
 }

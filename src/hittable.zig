@@ -1,17 +1,19 @@
 const std = @import("std");
 const Vec3 = @import("vector.zig").Vec3;
 const Ray = @import("ray.zig").Ray;
+const material = @import("material.zig");
 
 pub const HitRecord = struct {
     hit_point: f32,
     point: Vec3,
     normal: Vec3,
     front_face: bool,
+    scatterable: *material.Scatterable,
 
     pub fn setFaceNormal(hit_record: HitRecord, ray: Ray, outward_normal: Vec3) HitRecord {
         const front_face: bool = Vec3.dot(ray.direction, outward_normal) < 0;
         const new_normal: Vec3 = if (front_face) outward_normal else outward_normal.mult(Vec3.init(-1.0, -1.0, -1.0));
-        return HitRecord{ .hit_point = hit_record.hit_point, .front_face = front_face, .normal = new_normal, .point = hit_record.point };
+        return HitRecord{ .hit_point = hit_record.hit_point, .front_face = front_face, .normal = new_normal, .point = hit_record.point, .scatterable = hit_record.scatterable };
     }
 };
 

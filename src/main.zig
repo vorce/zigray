@@ -7,6 +7,7 @@ const hittable = @import("hittable.zig");
 const Sphere = @import("sphere.zig").Sphere;
 const Camera = @import("camera.zig").Camera;
 const zigray_utils = @import("util.zig");
+const material = @import("material.zig");
 
 pub fn main() anyerror!void {
     // Camera
@@ -22,11 +23,22 @@ pub fn main() anyerror!void {
     const max_depth: i32 = 50;
 
     // World
+    // Is there a need for variable materials and shapes? maybe const makes more sense if not.
     var world: hittable.HittableList = hittable.HittableList.init();
-    var sphere: Sphere = Sphere.init(Vec3.init(0.0, 0.0, -1.0), 0.5);
-    var land: Sphere = Sphere.init(Vec3.init(0, -100.5, -1), 100);
-    world.addHittable(&sphere.hittable);
+    var material_ground = material.Lambertian.init(Vec3.init(0.8, 0.8, 0.0));
+    var material_center = material.Lambertian.init(Vec3.init(0.7, 0.3, 0.3));
+    var material_left = material.Metal.init(Vec3.init(0.8, 0.8, 0.8));
+    var material_right = material.Metal.init(Vec3.init(0.8, 0.6, 0.2));
+
+    var land: Sphere = Sphere.init(Vec3.init(0, -100.5, -1), 100, &material_ground.scatterable);
+    var sphere_center: Sphere = Sphere.init(Vec3.init(0.0, 0.0, -1.0), 0.5, &material_center.scatterable);
+    var sphere_left: Sphere = Sphere.init(Vec3.init(-1.0, 0.0, -1.0), 0.5, &material_left.scatterable);
+    var sphere_right: Sphere = Sphere.init(Vec3.init(1.0, 0.0, -1.0), 0.5, &material_right.scatterable);
+
     world.addHittable(&land.hittable);
+    world.addHittable(&sphere_center.hittable);
+    world.addHittable(&sphere_left.hittable);
+    world.addHittable(&sphere_right.hittable);
 
     try stdout.print("P3\n{d} {d}\n255\n", .{ image_width, image_height });
 
