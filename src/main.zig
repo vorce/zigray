@@ -8,6 +8,7 @@ const Sphere = @import("sphere.zig").Sphere;
 const Camera = @import("camera.zig").Camera;
 const zigray_utils = @import("util.zig");
 const material = @import("material.zig");
+const time = std.time;
 
 pub fn main() anyerror!void {
     // Camera
@@ -44,6 +45,8 @@ pub fn main() anyerror!void {
     world.addHittable(&sphere_top_right.hittable);
     world.addHittable(&sphere_top_center.hittable);
 
+    const render_start_time: i64 = time.milliTimestamp();
+
     try stdout.print("P3\n{d} {d}\n255\n", .{ image_width, image_height });
 
     var y: i32 = image_height - 1;
@@ -63,5 +66,5 @@ pub fn main() anyerror!void {
             try Vec3.writeColor(pixel_color, samples_per_pixel);
         }
     }
-    stderr.print("\nDone.\n", .{});
+    stderr.print("\nDone in {d}s.\n", .{@divFloor((time.milliTimestamp() - render_start_time), 1000)});
 }
